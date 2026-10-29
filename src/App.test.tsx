@@ -5,14 +5,19 @@ import { store } from "./store";
 import { App } from "./App";
 
 describe("App Component", () => {
-  test("renders Travel Agency Catalogue header and tours from Redux store", () => {
-    const { getByText } = render(
+  test("renders header, search bar, and initial tours", () => {
+    const { getByPlaceholderText, getAllByText, getByRole } = render(
       <Provider store={store}>
         <App />
       </Provider>,
     );
 
-    expect(getByText(/Travel Agency Catalogue/i)).toBeInTheDocument();
-    expect(getByText(/Альпійська казка/i)).toBeInTheDocument();
+    // Перевірка наявності поля пошуку та кнопки
+    expect(getByPlaceholderText(/Куди ви хочете поїхати/i)).toBeInTheDocument();
+    expect(getByRole("button", { name: /знайти/i })).toBeInTheDocument();
+
+    // Перевірка карток турів, які підвантажуються зі сховища Redux
+    expect(getAllByText(/Альпійська казка/i)[0]).toBeInTheDocument();
+    expect(getAllByText(/Пляжі Балі та Убуд/i)[0]).toBeInTheDocument();
   });
 });
