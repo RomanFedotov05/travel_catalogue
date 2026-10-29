@@ -1,5 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
 import { TourCard } from "./TourCard";
 import type { Tour } from "../../store/toursSlice";
 
@@ -14,7 +15,11 @@ describe("TourCard Component (Dumb)", () => {
   };
 
   test("correctly renders tour details passed via props", () => {
-    const { getByText, getByAltText } = render(<TourCard tour={mockTour} />);
+    const { getByText, getByAltText } = render(
+      <BrowserRouter>
+        <TourCard tour={mockTour} />
+      </BrowserRouter>,
+    );
 
     expect(getByText("Тестовий тур у гори")).toBeInTheDocument();
     expect(getByText(/Австрія/i)).toBeInTheDocument();
