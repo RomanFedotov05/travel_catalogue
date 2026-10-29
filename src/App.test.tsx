@@ -5,19 +5,30 @@ import { store } from "./store";
 import { App } from "./App";
 
 describe("App Component", () => {
-  test("renders header, search bar, and initial tours", () => {
-    const { getByPlaceholderText, getAllByText, getByRole } = render(
+  test("renders header, search bar, loader and async tours", async () => {
+    const { getByPlaceholderText, getByRole, findByText } = render(
       <Provider store={store}>
         <App />
       </Provider>,
     );
 
-    // Перевірка наявності поля пошуку та кнопки
+    // 1. Синхронні елементи, які є на екрані одразу
     expect(getByPlaceholderText(/Куди ви хочете поїхати/i)).toBeInTheDocument();
     expect(getByRole("button", { name: /знайти/i })).toBeInTheDocument();
 
-    // Перевірка карток турів, які підвантажуються зі сховища Redux
-    expect(getAllByText(/Альпійська казка/i)[0]).toBeInTheDocument();
-    expect(getAllByText(/Пляжі Балі та Убуд/i)[0]).toBeInTheDocument();
+    // 2. Асинхронне очікування завантаження турів через API (findByText чекає завершення запиту)
+    const tourTitle = await findByText(
+      /Альпійська казка/i,
+      {},
+      { timeout: 3000 },
+    );
+    expect(tourTitle).toBeInTheDocument();
+
+    const secondTour = await findByText(
+      /Пляжі Балі та Убуд/i,
+      {},
+      { timeout: 3000 },
+    );
+    expect(secondTour).toBeInTheDocument();
   });
 });
